@@ -6,11 +6,9 @@ import sys
 
 def autoScanFile(file):
     url = 'http://localhost:8000/api/v1/scan'
-    api-key = None
-    header = {"Authorization:" api-key}
     files = {'file': open(file, 'rb')}
 
-    response = requests.post(url, headers=header, files=files)
+    response = requests.post(url, files=files)
     if response.status_code == 200:
         data = json.loads(response.content)
 
@@ -35,6 +33,9 @@ def autoScanFile(file):
 if __name__ == "__main__":
     args = sys.argv
 
-    for i in range(1, len(args)):
-        fle = args[i]
-        autoScanFile(fle)
+    if len(args) < 2:
+        print("You need to pass file as argument")
+    else:
+        for i in range(1, len(args)):
+            fle = args[i]
+            autoScanFile(fle)
