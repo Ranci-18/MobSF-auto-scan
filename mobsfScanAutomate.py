@@ -25,20 +25,61 @@ def autoScanFile(file_path):
         response = requests.post(url, headers=headers, files=files, data=params)
         if response.status_code == 200:
             data = json.loads(response.content)
-            issues = data.get('issues', [])
+            critical_issues = 0
+            warning = 0
+            for key, val in data.items():
+                if key == "permissions":
+                    if type(val) == dict:
+                        for k, v in val.items():
+                            if type(v) == dict:
+                                for ky, vl in v.items():
+                                    if v[ky] == 'dangerous':
+                                        critical_issues += 1
+                                    if v[ky] == 'warning':
+                                        warning += 1
+            print("{} dangerous warnings in permissions analysis".format(critical_issues))
+            print("=================")
+            print("{} warnings in permissions analysis".format(warning))
+            print("-----------------")
 
-            critical_issues = [issue for issue in
-                               issues if issue.get('severity') == 'Critical']
-            high_issues = [issue for issue in
-                           issues if issue.get('severity') == 'High']
-            medium_issues = [issue for issue in
-                             issues if issue.get('severity') == 'Medium']
-
-            print("Critical issues: {}, "
-                  "High issues: {}, "
-                  "Medium issues: {}".format(len(critical_issues),
-                                         len(high_issues),
-                                         len(medium_issues)))
+            for key, val in data.items():    
+                if key == "certificate_analysis":
+                    if type(val) == dict:
+                        for k, v in val.items():  
+                            if type(v) == dict:
+                                for ky, vl in v.items():
+                                    if ky == 'warning':
+                                        warning += v[ky]
+                                        print("{} warnings in certificate analysis".format(warning))
+                                        print("-----------------")
+                                    if ky == 'high':
+                                        print("{} high/critical warnings in certificate analysis".format(v[ky]))
+                                        print("=================")
+                if key == "manifest_analysis":
+                    if type(val) == dict:
+                        for k, v in val.items():
+                            if type(v) == dict:
+                                for ky, vl in v.items():
+                                    if ky == 'high':
+                                        print("{} high/critical warnings in manifest analysis".format(v[ky]))
+                                        print("=================")
+                                    if ky == 'warning':
+                                        warning += v[ky]
+                                        print("{} warnings in manifest analysis".format(warning))
+                                        print("-----------------")
+                if key == "code_analysis":
+                    if type(val) == dict:
+                        for k, v in val.items():
+                            if type(v) == dict:
+                                for ky, vl in v.items():
+                                    if ky == 'high':
+                                        print("{} high/critical warnings in code analysis".format(v[ky]))
+                                        print("=================")
+                                    if ky == 'warning':
+                                        warning += v[ky]
+                                        print("{} warnings in code analysis".format(warning))
+                                        print("-----------------")                
+                                    
         else:
             print("Error Response: {}".format(response.text))
 
@@ -52,3 +93,5 @@ if __name__ == "__main__":
         for i in range(1, len(args)):
             fle = args[i]
             autoScanFile(fle)
+            print("File: {}".format(args[i]))
+            print("+++++++++++++++++++++++++++++++++++++")
