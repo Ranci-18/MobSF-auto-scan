@@ -12,7 +12,7 @@ def autoScanFile(file_path):
     file_name = os.path.basename(file_path)
     hash_obj = hashlib.md5()
     
-    api_key = 'e68b24efbcf78495f93873d887110117eacea9e412b86f894b5eca2df7ab7121'
+    api_key = '831b0baf2b718bb0216a40b2a8a4ef115d5d58830182ec059cc048571f0edd5d'
     headers = {'Authorization': api_key}
     
     with (open(file_path, 'rb')) as f:
